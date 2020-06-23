@@ -13,6 +13,8 @@ services:
       - "$PWD/postgresql:/var/lib/postgresql"
 
   sonarqube: # SONARQUBE
+    # use UID here
+    user: 1004:1004
     image: sonarqube:6.7
     container_name: sonarqube
     restart: always  
