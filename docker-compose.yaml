@@ -3,11 +3,13 @@
 version: '3'
 services:
    sonarqube: # SONARQUBE
-    image: sonarqube
+    image: sonarqube:lts
     container_name: sonarqube
     restart: always
     networks:
       - sonarnet
+    links:
+      - db
     environment:
       - SONARQUBE_JDBC_URL=jdbc:postgresql://db:5432/sonar
       - SONARQUBE_JDBC_USERNAME=sonar
@@ -20,19 +22,20 @@ services:
       - "$PWD/sonarqube/sonarqube-extensions:/opt/sonarqube/extensions"
       - "$PWD/sonarqube/data/sonarqube/bundled_plugins:/opt/sonarqube/lib/bundled-plugins"
     ports:
-      - "3000:9000"
+      - "9000:9000"
 
-   postgresql: # BANCO DE DADOS POSTGRESQL
-    image: postgresql
+   db: # BANCO DE DADOS POSTGRESQL
+    image: postgres
     container_name: postgresql
     restart: always
     networks:
       - sonarnet
     environment:
       - POSTGRESQL_USER=sonar
-      - POSTGRESQL_PASS=sonar
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
-      - "$PWDpostgresql:/var/lib/postgresql"
+      - "$PWD/postgresql:/var/lib/postgresql"
       - "$PWD/postgresql_data:/var/lib/postgresql/data"
 networks:
   sonarnet:
